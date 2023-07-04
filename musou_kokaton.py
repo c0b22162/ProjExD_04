@@ -54,7 +54,7 @@ class Bird(pg.sprite.Sprite):
         引数2 xy：こうかとん画像の位置座標タプル
         """
         super().__init__()
-        img0 = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex04/fig/{num}.png"), 0, 2.0)
+        img0 = pg.transform.rotozoom(pg.image.load(f"ex04/fig/{num}.png"), 0, 2.0)
         img = pg.transform.flip(img0, True, False)  # デフォルトのこうかとん
         self.imgs = {
             (+1, 0): img,  # 右
@@ -83,9 +83,9 @@ class Bird(pg.sprite.Sprite):
         引数2 screen：画面Surface
         """
 
-        self.image = pg.transform.rotozoom(pg.image.load(f"ProjexD2023/ex04/fig/{num}.png"), 0, 2.0)
+        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/{num}.png"), 0, 2.0)
 
-        self.image = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex04/fig/{num}.png"), 0, 2.0)
+        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/{num}.png"), 0, 2.0)
 
         screen.blit(self.image, self.rect)
 
@@ -179,10 +179,10 @@ class Beam(pg.sprite.Sprite):
         self.vx, self.vy = bird.get_direction()
 
         angle = math.degrees(math.atan2(-self.vy, self.vx))
-        self.image = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex04/fig/beam.png"), angle, 2.0)
+        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/beam.png"), angle, 2.0)
 
         angle = math.degrees(math.atan2(-self.vy, self.vx))+angle0
-        self.image = pg.transform.rotozoom(pg.image.load(f"ProjExD2023/ex04/fig/beam.png"), angle+angle0, 2.0)
+        self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/beam.png"), angle+angle0, 2.0)
 
         self.vx = math.cos(math.radians(angle))
         self.vy = -math.sin(math.radians(angle))
@@ -225,7 +225,7 @@ class Explosion(pg.sprite.Sprite):
         引数2 life：爆発時間
         """
         super().__init__()
-        img = pg.image.load("ProjExD2023/ex04/fig/explosion.gif")
+        img = pg.image.load("ex04/fig/explosion.gif")
         self.imgs = [img, pg.transform.flip(img, 1, 1)]
         self.image = self.imgs[0]
         self.rect = self.image.get_rect(center=obj.rect.center)
@@ -246,7 +246,7 @@ class Enemy(pg.sprite.Sprite):
     """
     敵機に関するクラス
     """
-    imgs = [pg.image.load(f"ProjExD2023/ex04/fig/alien{i}.png") for i in range(1, 4)]
+    imgs = [pg.image.load(f"ex04/fig/alien{i}.png") for i in range(1, 4)]
     
     def __init__(self):
         super().__init__()
@@ -306,6 +306,9 @@ class Gravity(pg.sprite.Sprite):
         self.life = life
 
     def update(self):
+        self.life -= 1
+        if self.life < 0:
+            self.kill()
 
 class Shield(pg.sprite.Sprite):
     """
@@ -342,7 +345,7 @@ class Shield(pg.sprite.Sprite):
 def main():
     pg.display.set_caption("真！こうかとん無双")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
-    bg_img = pg.image.load("ProjExD2023/ex04/fig/pg_bg.jpg")
+    bg_img = pg.image.load("ex04/fig/pg_bg.jpg")
     score = Score()
 
     bird = Bird(3, (900, 400))
@@ -380,8 +383,6 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_TAB and score.score >= 50:
                 gravities.add(Gravity(bird, 200, 500))
                 score.score -= 50
-
-        screen.blit(bg_img, [0, 0]) 
 
             if event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score >= 100:
                 bird.change_state("hyper",500)
